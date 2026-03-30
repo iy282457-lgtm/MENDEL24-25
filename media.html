@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mendelian Chronicles</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f0f0f0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* Navigation Styles */
+     nav {
+            background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 50%, #388e3c 100%);
+            padding: 15px 30px;
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            box-shadow: 0 4px 20px rgba(27, 94, 32, 0.3);
+        }
+
+        .left-text {
+            font-size: clamp(18px, 4vw, 24px);
+            color: white;
+            display: flex;
+            align-items: center;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .left-text img {
+            width: clamp(35px, 8vw, 50px);
+            height: clamp(35px, 8vw, 50px);
+            margin-right: 12px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            object-fit: cover;
+        }
+
+        .left-text img:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .left-text span {
+            margin-left: 5px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .nav-list {
+            list-style-type: none;
+            display: flex;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .nav-list li {
+            margin: 0;
+        }
+
+        .nav-list a {
+            text-decoration: none;
+            color: white;
+            font-size: clamp(14px, 2.5vw, 16px);
+            text-transform: uppercase;
+            padding: 10px 18px;
+            display: block;
+            position: relative;
+            transition: all 0.3s ease;
+            border-radius: 25px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-list a::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background-color: #a5d6a7;
+            bottom: 5px;
+            left: 0;
+            transform: scaleX(0);
+            transform-origin: bottom right;
+            transition: transform 0.3s ease-out;
+        }
+
+        .nav-list a:hover {
+            color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .nav-list a:hover::after {
+            transform: scaleX(0.8);
+            transform-origin: bottom center;
+        }
+
+        /* Mobile Menu Toggle */
+        .menu-toggle {
+            display: none;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .menu-toggle:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+
+    /* About Us / Hero Section with Class Picture */
+    .about-section {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    /* Background Image Layer */
+    .about-bg-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url("Class_Pic.jpg");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      z-index: 0;
+    }
+
+    /* Dark Overlay */
+    .about-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        135deg,
+        rgba(0, 0, 0, 0.85) 0%,
+        rgba(0, 0, 0, 0.6) 50%,
+        rgba(89, 152, 91, 0.4) 100%
+      );
+      z-index: 1;
+    }
+
+    /* Corner Borders - Thin Lines on Corners Only */
+    .corner-borders {
+      position: absolute;
+      top: 30px;
+      left: 30px;
+      right: 30px;
+      bottom: 30px;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .corner-borders::before,
+    .corner-borders::after {
+      content: '';
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      border-color: rgba(255, 255, 255, 0.8);
+      border-style: solid;
+      transition: all 0.3s ease;
+    }
+
+    /* Top Left Corner */
+    .corner-borders::before {
+      top: 0;
+      left: 0;
+      border-width: 3px 0 0 3px;
+    }
+
+    /* Top Right Corner */
+    .corner-borders::after {
+      top: 0;
+      right: 0;
+      border-width: 3px 3px 0 0;
+    }
+
+    /* Bottom Corners */
+    .corner-borders .bottom-left,
+    .corner-borders .bottom-right {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      border-color: rgba(255, 255, 255, 0.8);
+      border-style: solid;
+      transition: all 0.3s ease;
+    }
+
+    .corner-borders .bottom-left {
+      bottom: 0;
+      left: 0;
+      border-width: 0 0 3px 3px;
+    }
+
+    .corner-borders .bottom-right {
+      bottom: 0;
+      right: 0;
+      border-width: 0 3px 3px 0;
+    }
+
+    /* Hover effect for corners */
+    .about-section:hover .corner-borders::before,
+    .about-section:hover .corner-borders::after,
+    .about-section:hover .corner-borders .bottom-left,
+    .about-section:hover .corner-borders .bottom-right {
+      width: 100px;
+      height: 100px;
+      border-color: #59985B;
+    }
+
+    /* Content Container */
+    .about-content {
+      position: relative;
+      z-index: 3;
+      max-width: 900px;
+      width: 90%;
+      text-align: center;
+      color: white;
+      padding: 40px 20px;
+      animation: fadeInUp 1s ease-out;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Class Logo - No white border, green glow instead */
+    .about-logo {
+  width: clamp(120px, 25vw, 200px);
+  height: clamp(120px, 25vw, 200px);
+  border-radius: 50%;
+  border: none;
+  box-shadow: 
+    0 0 0 4px #59985B,
+    0 10px 40px rgba(0, 0, 0, 0.5),
+    0 0 30px rgba(89, 152, 91, 0.4);
+  display: block;
+  margin: 0 auto 30px auto;
+  object-fit: cover;
+  transition: all 0.3s ease;
+  background-color: #59985B;
+}
+
+    .about-logo:hover {
+      transform: scale(1.05) rotate(3deg);
+      box-shadow: 
+        0 0 0 6px #59985B,
+        0 15px 50px rgba(0, 0, 0, 0.6),
+        0 0 50px rgba(89, 152, 91, 0.6);
+    }
+
+    /* Section Title - Better Styling */
+    .about-title {
+      font-size: clamp(36px, 7vw, 56px);
+      font-weight: 800;
+      margin-bottom: 25px;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      position: relative;
+      display: inline-block;
+      /* Gradient text effect */
+      background: linear-gradient(135deg, #ffffff 0%, #59985B 50%, #ffffff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      /* Text shadow for depth */
+      filter: drop-shadow(3px 3px 6px rgba(0, 0, 0, 0.8));
+      animation: shimmer 3s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+
+    .about-title::after {
+      content: '';
+      position: absolute;
+      bottom: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 4px;
+      background: linear-gradient(90deg, transparent, #59985B, transparent);
+      border-radius: 2px;
+    }
+
+    /* Description Text */
+    .about-description {
+      font-size: clamp(16px, 2.5vw, 22px);
+      line-height: 1.8;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+      font-weight: 300;
+      letter-spacing: 0.5px;
+    }
+
+    /* Highlight Box */
+    .highlight-box {
+      background: rgba(89, 152, 91, 0.15);
+      border-left: 4px solid #59985B;
+      padding: 25px;
+      margin: 30px 0;
+      border-radius: 0 15px 15px 0;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(89, 152, 91, 0.3);
+      border-left-width: 4px;
+    }
+
+    .highlight-text {
+      font-size: clamp(18px, 3vw, 24px);
+      font-style: italic;
+      font-weight: 500;
+      color: #fff;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Hashtag */
+    .hashtag {
+      display: inline-block;
+      background: linear-gradient(135deg, #59985B, #487549);
+      padding: 15px 35px;
+      border-radius: 30px;
+      font-weight: bold;
+      margin-top: 25px;
+      font-size: clamp(16px, 3vw, 20px);
+      box-shadow: 0 5px 20px rgba(89, 152, 91, 0.4);
+      animation: pulse 2s infinite;
+      text-decoration: none;
+      color: white;
+      transition: all 0.3s ease;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .hashtag:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 30px rgba(89, 152, 91, 0.6);
+      background: linear-gradient(135deg, #6ab86c, #59985B);
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+    }
+
+    /* Scroll Indicator */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+      animation: bounce 2s infinite;
+      cursor: pointer;
+    }
+
+    .scroll-indicator span {
+      display: block;
+      width: 30px;
+      height: 50px;
+      border: 2px solid white;
+      border-radius: 20px;
+      position: relative;
+    }
+
+    .scroll-indicator span::before {
+      content: '';
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 6px;
+      height: 10px;
+      background: white;
+      border-radius: 3px;
+      animation: scrollMove 2s infinite;
+    }
+
+    @keyframes scrollMove {
+      0% { top: 8px; opacity: 1; }
+      100% { top: 25px; opacity: 0; }
+    }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+      40% { transform: translateX(-50%) translateY(-10px); }
+      60% { transform: translateX(-50%) translateY(-5px); }
+    }
+
+    /* Content Section */
+    .content {
+      flex: 1;
+      padding: 80px 20px;
+      background-color: #111;
+      color: white;
+    }
+
+    /* Better Section Header */
+    .content h1 {
+      text-align: center;
+      margin-bottom: 50px;
+      font-size: clamp(32px, 6vw, 48px);
+      text-transform: uppercase;
+      letter-spacing: 5px;
+      position: relative;
+      padding-bottom: 25px;
+      font-weight: 800;
+      /* Gradient text */
+      background: linear-gradient(90deg, #59985B, #ffffff, #59985B);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      background-size: 200% auto;
+      animation: shine 4s linear infinite;
+    }
+
+    @keyframes shine {
+      to { background-position: 200% center; }
+    }
+
+    .content h1::before {
+      content: '✦';
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #59985B;
+      font-size: 24px;
+    }
+
+    .content h1::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 150px;
+      height: 4px;
+      background: linear-gradient(90deg, transparent, #59985B, #487549, transparent);
+      border-radius: 2px;
+    }
+
+    /* Must Watch Section */
+    .must-watch {
+      padding: 20px 0;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Better Sub-header */
+    .must-watch h2 {
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 50px;
+      font-size: clamp(22px, 4vw, 32px);
+      color: #fff;
+      text-align: center;
+      position: relative;
+      display: inline-block;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 0 30px;
+      letter-spacing: 3px;
+    }
+
+    .must-watch h2::before,
+    .must-watch h2::after {
+      content: '◆';
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #59985B;
+      font-size: 12px;
+    }
+
+    .must-watch h2::before {
+      left: 0;
+    }
+
+    .must-watch h2::after {
+      right: 0;
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+    }
+
+    .card {
+      background: linear-gradient(145deg, #1a1a1a, #2a2a2a);
+      padding: 25px;
+      border-radius: 15px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      transition: all 0.3s ease;
+      border: 1px solid #333;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #59985B, transparent);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+      border-color: #59985B;
+    }
+
+    .card img {
+      width: 100%;
+      height: 220px;
+      border-radius: 10px;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+      margin-bottom: 15px;
+    }
+
+    .card:hover img {
+      transform: scale(1.05);
+    }
+
+    .card-title {
+      font-weight: bold;
+      margin-top: 15px;
+      font-size: clamp(20px, 3vw, 24px);
+      color: #59985B;
+      margin-bottom: 10px;
+    }
+
+    .card-description {
+      font-size: clamp(14px, 2vw, 16px);
+      color: #bbb;
+      line-height: 1.6;
+      margin-bottom: 15px;
+      text-align: justify;
+      text-align-last: center; /* or 'left' or 'justify' */
+      hyphens: auto; /* Optional: allows word breaking with hyphens */
+}
+
+    .video-time {
+      font-size: 13px;
+      color: #777;
+      padding-top: 15px;
+      border-top: 1px solid #333;
+      font-weight: 500;
+    }
+
+    /* Footer Styles */
+    footer {
+      background-color: #0a0a0a;
+      color: white;
+      text-align: center;
+      padding: 50px 20px;
+      width: 100%;
+      border-top: 4px solid #59985B;
+      position: relative;
+    }
+
+    footer::before {
+      content: '❖';
+      position: absolute;
+      top: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #0a0a0a;
+      color: #59985B;
+      font-size: 24px;
+      padding: 0 20px;
+    }
+
+    .social-icons {
+      margin-bottom: 30px;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .social-icons a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 50px;
+      height: 50px;
+      background-color: #1a1a1a;
+      color: white;
+      text-decoration: none;
+      font-size: 20px;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+      border: 2px solid #333;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .social-icons a::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #59985B, #487549);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 0;
+    }
+
+    .social-icons a:hover::before {
+      opacity: 1;
+    }
+
+    .social-icons a span {
+      position: relative;
+      z-index: 1;
+    }
+
+    .social-icons a:hover {
+      transform: translateY(-5px) scale(1.1);
+      border-color: #59985B;
+      box-shadow: 0 10px 25px rgba(89, 152, 91, 0.4);
+    }
+
+    footer p {
+      margin: 0;
+      font-size: 14px;
+      color: #666;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      nav {
+        padding: 10px 15px;
+      }
+
+      .menu-toggle {
+        display: block;
+      }
+
+      .nav-list {
+        display: none;
+        width: 100%;
+        flex-direction: column;
+        background-color: #487549;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        padding: 10px;
+        border-radius: 0 0 10px 10px;
+      }
+
+      .nav-list.active {
+        display: flex;
+      }
+
+      .nav-list li {
+        width: 100%;
+        text-align: center;
+      }
+
+      .nav-list a {
+        padding: 15px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .corner-borders {
+        top: 15px;
+        left: 15px;
+        right: 15px;
+        bottom: 15px;
+      }
+
+      .corner-borders::before,
+      .corner-borders::after,
+      .corner-borders .bottom-left,
+      .corner-borders .bottom-right {
+        width: 50px;
+        height: 50px;
+      }
+
+      .about-content {
+        padding: 30px 15px;
+      }
+
+      .highlight-box {
+        padding: 20px;
+        margin: 20px 0;
+      }
+
+      .grid-container {
+        grid-template-columns: 1fr;
+        gap: 25px;
+      }
+
+      .card {
+        padding: 20px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .about-section {
+        min-height: auto;
+        padding: 80px 0;
+      }
+
+      .about-logo {
+        box-shadow: 
+          0 0 0 3px #59985B,
+          0 10px 40px rgba(0, 0, 0, 0.5),
+          0 0 30px rgba(89, 152, 91, 0.4);
+      }
+	{
+        padding: 60px 15px;
+      }
+
+      .content {
+        padding: 60px 15px;
+      }
+
+      .social-icons a {
+        width: 45px;
+        height: 45px;
+        font-size: 18px;
+      }
+    }
+
+    /* Scrollbar Styling */
+    ::-webkit-scrollbar {
+      width: 12px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #111;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #59985B, #487549);
+      border-radius: 6px;
+      border: 3px solid #111;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #59985B;
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="left-text">
+      <img src="Logo.jpg" alt="Mendel Logo">
+      <span>MENDEL</span>
+    </div>
+    <button class="menu-toggle" onclick="toggleMenu()" aria-label="Toggle menu">☰</button>
+    <ul class="nav-list" id="navList">
+  <li><a href="#about">About</a></li>
+  <li><a href="profile.html">Students</a></li>
+  <li><a href="performance.html">Performance Tasks</a></li>
+  <li><a href="achievements2.html">Achievements</a></li>
+</ul>
+  </nav>
+  
+  <!-- About Us Section with Class Picture Background -->
+  <section class="about-section" id="about">
+    <!-- Background Image -->
+    <div class="about-bg-image"></div>
+    
+    <!-- Dark Overlay -->
+    <div class="about-overlay"></div>
+    
+    <!-- Corner Borders -->
+    <div class="corner-borders">
+      <div class="bottom-left"></div>
+      <div class="bottom-right"></div>
+    </div>
+
+    <!-- Content -->
+    <div class="about-content">
+      <img src="Logo.jpg" alt="Mendel Class Logo" class="about-logo">
+      
+      <h1 class="about-title">About Us</h1>
+      
+      <p class="about-description">
+        Mendel 2024–2025 is a chaotic yet classically unforgettable experience, a whirlwind of 
+        brilliance, banter, and barely making deadlines. It's where organized chaos meets academic
+        excellence, where group projects feel like survival challenges, and where laughter echoes
+        louder than late-night cramming.
+      </p>
+      
+      <div class="highlight-box">
+        <p class="highlight-text">
+          It's not just a class. It's a community, a chaotic mix
+          of creativity, resilience, and unbreakable bonds.
+        </p>
+      </div>
+      
+      <a href="#performance" class="hashtag">#BastaMendelGorabels</a>
+    </div>
+    
+    <!-- Scroll Indicator -->
+    <div class="scroll-indicator" onclick="document.getElementById('performance').scrollIntoView({behavior: 'smooth'})">
+      <span></span>
+    </div>
+  </section>
+
+  <!-- Content Section -->
+  <section class="content" id="performance">
+    <h1>Must See Only in Mendel</h1>
+    
+    <div class="must-watch">
+      <div class="grid-container">
+        <!-- Card 1 -->
+        <article class="card">
+          <img src="Logo.jpg" alt="MendelTalks">
+          <h3 class="card-title">MendelTalks</h3>
+          <p class="card-description">
+            MendelTalks is a conversation platform where students share their thoughts and experiences 
+            about what's happening in our section. It's like an interview session where we discuss our insights, 
+            and perspectives.
+          </p>
+          <div class="video-time">2025 | TCNHS</div>
+        </article>
+
+        <!-- Card 2 -->
+        <article class="card">
+          <img src="GeneTink.jpg" alt="Genetink">
+          <h3 class="card-title">Genetink</h3>
+          <p class="card-description">
+            Genetink is like a reflection journal or a whiteboard where students can write or draw 
+            their thoughts and ideas. It's a visual platform where we can express ourselves, 
+            reflect on our experiences, and share our insights with others.
+          </p>
+          <div class="video-time">2025 | TCNHS</div>
+        </article>
+
+        <!-- Card 3 -->
+        <article class="card">
+          <h3 class="card-title">More Coming Soon</h3>
+          <p class="card-description justify-text">
+           Stay tuned for more from Mendel 2024–2025. As we step into different paths and new schools, we carry with us the memories, laughter, and moments we shared. Though we may be apart, these stories stay with us, so keep checking back for the memories that made our time unforgettable.
+          </p>
+          <div class="video-time">Coming Soon | TCNHS</div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="social-icons">
+      <a href="https://www.facebook.com/TCNHS11STEMMENDEL"><span>f</span></a>
+         <a href="https://www.instagram.com/newgenes.11?igsh=eW5mOWlxYXFhaHJw"><span>📷</span></a>
+      
+    </div>
+    <p>&copy; 2025 MENDELIAN CHRONICLES | All Rights Reserved</p>
+  </footer>
+
+  <script>
+    // Mobile Menu Toggle
+    function toggleMenu() {
+      const navList = document.getElementById('navList');
+      navList.classList.toggle('active');
+    }
+
+    // Close menu when clicking on a link
+    document.querySelectorAll('.nav-list a').forEach(link => {
+      link.addEventListener('click', () => {
+        document.getElementById('navList').classList.remove('active');
+      });
+    });
+
+    // Smooth scroll for all navigation links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+
+    // Add scroll effect to navbar
+    window.addEventListener('scroll', () => {
+      const nav = document.querySelector('nav');
+      if (window.scrollY > 50) {
+        nav.style.boxShadow = '0 2px 20px rgba(0,0,0,0.3)';
+        nav.style.backgroundColor = '#487549';
+      } else {
+        nav.style.boxShadow = 'none';
+        nav.style.backgroundColor = '#59985B';
+      }
+    });
+
+    // Hide scroll indicator when scrolling down
+    window.addEventListener('scroll', () => {
+      const indicator = document.querySelector('.scroll-indicator');
+      if (window.scrollY > 100) {
+        indicator.style.opacity = '0';
+        indicator.style.pointerEvents = 'none';
+      } else {
+        indicator.style.opacity = '1';
+        indicator.style.pointerEvents = 'auto';
+      }
+    });
+  </script>
+
+</body>
+</html>
