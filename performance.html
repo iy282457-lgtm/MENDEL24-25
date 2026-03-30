@@ -289,9 +289,10 @@
             50% { transform: translateY(-20px) rotate(10deg); }
         }
 
+        /* FIXED: Mobile menu styles with !important and proper positioning */
         @media (max-width: 768px) {
             .menu-toggle {
-                display: block;
+                display: block !important;
             }
 
             .nav-list {
@@ -299,16 +300,29 @@
                 width: 100%;
                 flex-direction: column;
                 background: rgba(27, 94, 32, 0.95);
+                backdrop-filter: blur(10px);
                 position: absolute;
                 top: 100%;
                 left: 0;
                 padding: 20px;
                 border-radius: 0 0 20px 20px;
                 box-sizing: border-box;
+                z-index: 999;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             }
 
             .nav-list.active {
-                display: flex;
+                display: flex !important;
+            }
+
+            .nav-list li {
+                width: 100%;
+                text-align: center;
+            }
+
+            .nav-list a {
+                padding: 15px;
+                border-radius: 10px;
             }
 
             .task, .task:nth-child(even) {
@@ -382,7 +396,8 @@
                 <h3>Mendel Jams</h3>
                 <p>We started off the school year with a full swing as we showcase our talent for singing during our Jamming session entitled "The Mendel Jams". With the themes of 'Jologs' and 'Kalye' vibes. Class Mendel didn't miss a beat and made the party rolling.</p>
             </div>
-            <img src="Jams.jpg" alt="Mendel Jams">
+            <!-- FIXED: Changed Jams.jpg to jams.jpg (lowercase) -->
+            <img src="jams.jpg" alt="Mendel Jams">
         </div>
 
         <div class="task">
@@ -406,7 +421,8 @@
                 <h3>Volcano Model Project</h3>
                 <p>Another project completed by Class Mendel as they worked on their own version of a Volcano Model. Highlighting not only their understanding on Earth Science but also their creativity and craftsmanship.</p>
             </div>
-            <img src="Volcano.jpg" alt="Volcano Model Project">
+            <!-- FIXED: Changed Volcano.jpg to volcano.jpg (lowercase) -->
+            <img src="volcano.jpg" alt="Volcano Model Project">
         </div>
 
         <div class="task">
@@ -436,7 +452,9 @@
 
     <script>
         function toggleMenu() {
-            document.getElementById('navList').classList.toggle('active');
+            const navList = document.getElementById('navList');
+            navList.classList.toggle('active');
+            console.log('Menu toggled:', navList.classList.contains('active')); // Debug line
         }
     </script>
 </body>
